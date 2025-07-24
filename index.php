@@ -462,8 +462,8 @@ if (empty($allTasks)) {
                                         data-toggle="dropdown" aria-expanded="true"><i class="md md-file-download"></i>
                                         Export</button>
                                     <ul class="dropdown-menu" role="menu" style="right: 30px;">
-                                        <li><a href="#">PDF</a></li>
-                                        <li><a href="#">Excel CSV</a></li>
+                                        <li><a href="export_tasks.php?type=pdf">PDF</a></li>
+                                        <li><a href="export_tasks.php?type=csv">Excel CSV</a></li>
                                     </ul>
                                     <button type="button" class="btn btn-default waves-effect waves-light">
                                         Delete

@@ -7,7 +7,7 @@ startSession();
 
 $_SESSION = array(); // Clear all session variables
 
-if (ini_get("session.use_cookies")) { // Clear any cookies being used
+if (ini_get("session.use_cookies")) { // Clear any cookies being used -> TODO: double check this
     $params = session_get_cookie_params();
     setcookie(
         session_name(),
