@@ -332,309 +332,348 @@ if (empty($allTasks)) {
                                 </div>
                             <?php endif; ?>
                         </div>
+                    </div>
 
-                        <div id="managetasks" class="tab-pane fade">
-                            <div class="row m-b-20 new-button">
-                                <div class="col-md-12">
-                                    <div class="pull-right">
-                                        <button type="button"
-                                            class="btn btn-primary waves-effect waves-light new-task-btn"><i
-                                                class="fa fa-plus"></i> Add New Task</button>
-                                    </div>
+                    <div id="managetasks" class="tab-pane fade">
+                        <div class="row m-b-20 new-button">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="button"
+                                        class="btn btn-primary waves-effect waves-light new-task-btn"><i
+                                            class="fa fa-plus"></i> Add New Task</button>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Created Tasks -->
+                        <!-- New tasks, the div is hidden by default -->
+                        <div class="row new-task_panel" style="display: none;">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title"><i class="fa fa-plus"></i> New Task</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <form role="form" method="post">
+                                        <input type="hidden" name="action" value="create_task">
+                                        <div class="form-group">
+                                            <label class="control-label">Task Name</label>
+                                            <input type="text" class="form-control" name="title" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Description</label>
+                                            <textarea class="form-control" rows="5" name="description"></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Due Date</label>
+                                                <div class="input-group col-md-8">
+                                                    <input type="text" class="form-control date-input" name="due_date"
+                                                        placeholder="yyyy-mm-dd" id="datepicker" required>
+                                                    <span class="input-group-addon"><i
+                                                            class="glyphicon glyphicon-calendar"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="pull-right">
+                                                <button type="submit"
+                                                    class="create-btn btn btn-primary waves-effect waves-light">Create</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Created Tasks -->
+                        <div class="row created-tasks">
                             <div class="row created-tasks">
-                                <div class="row created-tasks">
 
-                                    <!-- If allTasks is not empty, iterate and display them -->
-                                    <?php if (!empty($allTasks)): ?>
-                                        <?php foreach ($allTasks as $task): ?>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="panel" style="cursor: pointer;">
-                                                    <div class="panel-header">
-                                                        <div class="due-date text-center pull-right">
-                                                            <?= date('d', strtotime($task['due_date'])) ?><br>
-                                                            <?= date('M', strtotime($task['due_date'])) ?>
-                                                        </div>
+                                <!-- If allTasks is not empty, iterate and display them -->
+                                <?php if (!empty($allTasks)): ?>
+                                    <?php foreach ($allTasks as $task): ?>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="panel" style="cursor: pointer;">
+                                                <div class="panel-header">
+                                                    <div class="due-date text-center pull-right">
+                                                        <?= date('d', strtotime($task['due_date'])) ?><br>
+                                                        <?= date('M', strtotime($task['due_date'])) ?>
                                                     </div>
-                                                    <div class="panel-body">
-                                                        <div class="panel-inner">
-                                                            <div class="panel-inner-content">
-                                                                <h3><?= htmlspecialchars($task['title']) ?></h3>
-                                                                <p><?= htmlspecialchars($task['description']) ?></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="panel-footer" style="padding: 0;text-align: right;">
-                                                        <div class="icon-links quick-icon-links">
-                                                            <button data-toggle="tooltip" type="button" title="Edit"
-                                                                class="btn btn icon-btn" onclick="editTask(<?= $task['id'] ?>)">
-                                                                <i class="fa fa-pencil"></i>
-                                                            </button>
-                                                        </div>
-                                                        <div class="icon-links quick-icon-links">
-                                                            <form method="post" style="display: inline;">
-                                                                <input type="hidden" name="action" value="delete_task">
-                                                                <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
-                                                                <button type="submit" data-toggle="tooltip" title="Delete"
-                                                                    class="btn btn icon-btn">
-                                                                    <i class="fa fa-trash-o"></i>
-                                                                </button>
-                                                            </form>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="panel-inner">
+                                                        <div class="panel-inner-content">
+                                                            <h3><?= htmlspecialchars($task['title']) ?></h3>
+                                                            <p><?= htmlspecialchars($task['description']) ?></p>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="panel-footer" style="padding: 0;text-align: right;">
+                                                    <div class="icon-links quick-icon-links">
+                                                        <button data-toggle="tooltip" type="button" title="Edit"
+                                                            class="btn btn icon-btn" onclick="editTask(<?= $task['id'] ?>)">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="icon-links quick-icon-links">
+                                                        <form method="post" style="display: inline;">
+                                                            <input type="hidden" name="action" value="delete_task">
+                                                            <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
+                                                            <button type="submit" data-toggle="tooltip" title="Delete"
+                                                                class="btn btn icon-btn">
+                                                                <i class="fa fa-trash-o"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <div class="col-md-12">
-                                            <p>No tasks to manage.</p>
                                         </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div><!-- end New Tasks -->
-
-
-                            <div id="completedtasks" class="tab-pane fade">
-                                <div class="row m-b-20">
+                                    <?php endforeach; ?>
+                                <?php else: ?>
                                     <div class="col-md-12">
-                                        <div class="pull-right">
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="block-view"
-                                                    title="Block view" class="btn btn icon-btn">
-                                                    <i class="block-view fa fa-th-large text-primary"></i>
-                                                </button>
-                                            </div>
-                                            <div class="icon-links quick-icon-links" style="margin-right: 20px;">
-                                                <button data-toggle="tooltip" type="button" id="list-view"
-                                                    title="List view" class="btn btn icon-btn">
-                                                    <i class="list-view fa fa-th-list"></i>
-                                                </button>
-                                            </div>
+                                        <p>No tasks to manage.</p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div><!-- end New Tasks -->
+                    </div>
 
-                                            <button type="button"
-                                                class="btn dropdown-toggle btn-primary waves-effect waves-light"
-                                                data-toggle="dropdown" aria-expanded="true"><i
-                                                    class="md md-file-download"></i>
-                                                Export</button>
-                                            <ul class="dropdown-menu" role="menu" style="right: 30px;">
-                                                <li><a href="#">PDF</a></li>
-                                                <li><a href="#">Excel CSV</a></li>
-                                            </ul>
-                                            <button type="button" class="btn btn-default waves-effect waves-light">
-                                                Delete
-                                                All</button>
+                    <div id="completedtasks" class="tab-pane fade">
+                        <div class="row m-b-20">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <div class="icon-links quick-icon-links">
+                                        <button data-toggle="tooltip" type="button" id="block-view" title="Block view"
+                                            class="btn btn icon-btn">
+                                            <i class="block-view fa fa-th-large text-primary"></i>
+                                        </button>
+                                    </div>
+                                    <div class="icon-links quick-icon-links" style="margin-right: 20px;">
+                                        <button data-toggle="tooltip" type="button" id="list-view" title="List view"
+                                            class="btn btn icon-btn">
+                                            <i class="list-view fa fa-th-list"></i>
+                                        </button>
+                                    </div>
 
+                                    <button type="button"
+                                        class="btn dropdown-toggle btn-primary waves-effect waves-light"
+                                        data-toggle="dropdown" aria-expanded="true"><i class="md md-file-download"></i>
+                                        Export</button>
+                                    <ul class="dropdown-menu" role="menu" style="right: 30px;">
+                                        <li><a href="#">PDF</a></li>
+                                        <li><a href="#">Excel CSV</a></li>
+                                    </ul>
+                                    <button type="button" class="btn btn-default waves-effect waves-light">
+                                        Delete
+                                        All</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row completed-blocks">
+                            <?php if (!empty($completedTasks)): ?>
+                                <?php foreach ($completedTasks as $task): ?>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="panel" style="cursor: pointer;">
+                                            <div class="panel-header">
+                                                <div class="due-date text-center pull-right">
+                                                    <?= date('d', strtotime($task['due_date'])) ?><br>
+                                                    <?= date('M', strtotime($task['due_date'])) ?>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="panel-inner">
+                                                    <div class="panel-inner-content">
+                                                        <h3><?= htmlspecialchars($task['title']) ?></h3>
+                                                        <p><?= htmlspecialchars($task['description']) ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer" style="padding: 0;text-align: right;">
+                                                <div class="icon-links quick-icon-links">
+                                                    <form method="post" style="display: inline;">
+                                                        <input type="hidden" name="action" value="delete_task">
+                                                        <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
+                                                        <button type="submit" data-toggle="tooltip" title="Delete"
+                                                            class="btn btn icon-btn">
+                                                            <i class="fa fa-trash-o"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="col-md-12">
+                                    <p>No completed tasks yet.</p>
                                 </div>
-                                <div class="row completed-blocks">
-                                    <?php if (!empty($completedTasks)): ?>
-                                        <?php foreach ($completedTasks as $task): ?>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="panel" style="cursor: pointer;">
-                                                    <div class="panel-header">
-                                                        <div class="due-date text-center pull-right">
-                                                            <?= date('d', strtotime($task['due_date'])) ?><br>
-                                                            <?= date('M', strtotime($task['due_date'])) ?>
-                                                        </div>
-                                                    </div>
-                                                    <div class="panel-body">
-                                                        <div class="panel-inner">
-                                                            <div class="panel-inner-content">
-                                                                <h3><?= htmlspecialchars($task['title']) ?></h3>
-                                                                <p><?= htmlspecialchars($task['description']) ?></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="panel-footer" style="padding: 0;text-align: right;">
-                                                        <div class="icon-links quick-icon-links">
-                                                            <form method="post" style="display: inline;">
-                                                                <input type="hidden" name="action" value="delete_task">
-                                                                <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
-                                                                <button type="submit" data-toggle="tooltip" title="Delete"
-                                                                    class="btn btn icon-btn">
-                                                                    <i class="fa fa-trash-o"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <div class="col-md-12">
-                                            <p>No completed tasks yet.</p>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                            <?php endif; ?>
+                        </div>
 
-                            </div>
-                            <div class="row completed-list" style="display: none;">
-                                <table id="" class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Due Date</th>
-                                            <th>Task Name</th>
-                                            <th>Desscription</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>28 June</td>
-                                            <td>Task 0.5</td>
-                                            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua.</td>
-                                            <td>
-                                                <div class="icon-links quick-icon-links">
-                                                    <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                        class="btn btn icon-btn">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>28 June</td>
-                                            <td>Task</td>
-                                            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua.</td>
-                                            <td>
-                                                <div class="icon-links quick-icon-links">
-                                                    <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                        class="btn btn icon-btn">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>28 June</td>
-                                            <td>Task 2.0</td>
-                                            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua.</td>
-                                            <td>
-                                                <div class="icon-links quick-icon-links">
-                                                    <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                        class="btn btn icon-btn">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>28 June</td>
-                                            <td>Task 1.5</td>
-                                            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua.</td>
-                                            <td>
-                                                <div class="icon-links quick-icon-links">
-                                                    <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                        class="btn btn icon-btn">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="row completed-list" style="display: none;">
+                            <table id="" class="table table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Due Date</th>
+                                        <th>Task Name</th>
+                                        <th>Desscription</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>28 June</td>
+                                        <td>Task 0.5</td>
+                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                            tempor incididunt ut labore et dolore magna aliqua.</td>
+                                        <td>
+                                            <div class="icon-links quick-icon-links">
+                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
+                                                    class="btn btn icon-btn">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>28 June</td>
+                                        <td>Task</td>
+                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                            tempor incididunt ut labore et dolore magna aliqua.</td>
+                                        <td>
+                                            <div class="icon-links quick-icon-links">
+                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
+                                                    class="btn btn icon-btn">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>28 June</td>
+                                        <td>Task 2.0</td>
+                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                            tempor incididunt ut labore et dolore magna aliqua.</td>
+                                        <td>
+                                            <div class="icon-links quick-icon-links">
+                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
+                                                    class="btn btn icon-btn">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>28 June</td>
+                                        <td>Task 1.5</td>
+                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                            tempor incididunt ut labore et dolore magna aliqua.</td>
+                                        <td>
+                                            <div class="icon-links quick-icon-links">
+                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
+                                                    class="btn btn icon-btn">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+            </div>
 
 
-                <!-- Footer -->
-                <footer class="footer text-right">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xs-6">
-                                2017 © Synrgise.
-                            </div>
-                            <div class="col-xs-6">
-                                <ul class="pull-right list-inline m-b-0">
-                                    <li>
-                                        <a href="#">About</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Help</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Contact</a>
-                                    </li>
-                                </ul>
-                            </div>
+            <!-- Footer -->
+            <footer class="footer text-right">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            2017 © Synrgise.
+                        </div>
+                        <div class="col-xs-6">
+                            <ul class="pull-right list-inline m-b-0">
+                                <li>
+                                    <a href="#">About</a>
+                                </li>
+                                <li>
+                                    <a href="#">Help</a>
+                                </li>
+                                <li>
+                                    <a href="#">Contact</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                </footer>
-                <!-- End Footer -->
-
-            </div>
-            <!-- end container -->
-
+                </div>
+            </footer>
+            <!-- End Footer -->
 
         </div>
-
-        <!-- jQuery  -->
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/js/bootstrap.min.js"></script>
-        <script src="assets/js/bootstrap-datepicker.js"></script>
+        <!-- end container -->
 
 
+    </div>
 
-        <script>
+    <!-- jQuery  -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootstrap-datepicker.js"></script>
 
-            $(document).ready(function () {
 
-                $(".new-task-btn").click(function () {
-                    $(".created-tasks").hide();
-                    $(".new-button").hide();
-                    $(".new-task_panel").fadeIn(500);
-                });
 
-                $(".create-btn").click(function () {
-                    $(".new-task_panel").hide();
-                    $(".new-button").fadeIn(500);
-                    $(".created-tasks").fadeIn(500);
-                });
+    <script>
 
-                $("#list-view").click(function () {
-                    $(".completed-blocks").hide();
-                    $(".completed-list").fadeIn(500);
-                    $(".list-view").addClass('text-primary');
-                    $(".block-view").removeClass('text-primary');
-                });
+        $(document).ready(function () {
 
-                $("#block-view").click(function () {
-                    $(".completed-list").hide();
-                    $(".completed-blocks").fadeIn(500);
-                    $(".list-view").removeClass('text-primary');
-                    $(".block-view").addClass('text-primary');
-                });
+            $(".new-task-btn").click(function () {
+                $(".created-tasks").hide();
+                $(".new-button").hide();
+                $(".new-task_panel").fadeIn(500);
+            });
 
-                $('body').on('focus', ".date-input", function () {
-                    console.log('datepicker');
-                    $(this).datepicker({
-                        format: 'yyyy-mm-dd'
-                    });
+            $(".create-btn").click(function () {
+                $(".new-task_panel").hide();
+                $(".new-button").fadeIn(500);
+                $(".created-tasks").fadeIn(500);
+            });
+
+            $("#list-view").click(function () {
+                $(".completed-blocks").hide();
+                $(".completed-list").fadeIn(500);
+                $(".list-view").addClass('text-primary');
+                $(".block-view").removeClass('text-primary');
+            });
+
+            $("#block-view").click(function () {
+                $(".completed-list").hide();
+                $(".completed-blocks").fadeIn(500);
+                $(".list-view").removeClass('text-primary');
+                $(".block-view").addClass('text-primary');
+            });
+
+            $('body').on('focus', ".date-input", function () {
+                console.log('datepicker');
+                $(this).datepicker({
+                    format: 'yyyy-mm-dd'
                 });
             });
-            
+        });
 
-            function editTask(taskId) {
-                window.location.href = 'edit_task.php?id=' + taskId; // TODO: Have a modal instead of redirecting
-            }
+
+        function editTask(taskId) {
+            window.location.href = 'edit_task.php?id=' + taskId; // TODO: Have a modal instead of redirecting
+        }
 =
-            $('#datepicker').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-                todayHighlight: true
-            });
+        $('#datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true
+        });
 
-        </script>
+    </script>
 
 
 
