@@ -20,7 +20,6 @@ CREATE TABLE tasks (
     description TEXT,
     due_date DATE NOT NULL,
     status ENUM('pending', 'completed') DEFAULT 'pending', -- The status of a task
-    priority ENUM('low', 'medium', 'high') DEFAULT 'medium', -- The priority of a task
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     completed_at TIMESTAMP NULL DEFAULT NULL,
