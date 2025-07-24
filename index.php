@@ -1,5 +1,7 @@
 <?php
+
 require_once 'includes/config.php'; // We need the config.php file for database connection and functions
+require_once 'includes/session.php';
 
 startSession();
 requireLogin();
@@ -346,6 +348,45 @@ if (empty($allTasks)) {
                             </div>
                         </div>
 
+                        <!-- New tasks, the div is hidden by default -->
+                        <div class="row new-task_panel" style="display: none;">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title"><i class="fa fa-plus"></i> New Task</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <form role="form" method="post">
+                                        <input type="hidden" name="action" value="create_task">
+                                        <div class="form-group">
+                                            <label class="control-label">Task Name</label>
+                                            <input type="text" class="form-control" name="title" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Description</label>
+                                            <textarea class="form-control" rows="5" name="description"></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Due Date</label>
+                                                <div class="input-group col-md-8">
+                                                    <input type="text" class="form-control date-input" name="due_date"
+                                                        placeholder="yyyy-mm-dd" id="datepicker" required>
+                                                    <span class="input-group-addon"><i
+                                                            class="glyphicon glyphicon-calendar"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="pull-right">
+                                                <button type="submit"
+                                                    class="create-btn btn btn-primary waves-effect waves-light">Create</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Created Tasks -->
                         <div class="row created-tasks">
                             <div class="row created-tasks">
@@ -589,13 +630,16 @@ if (empty($allTasks)) {
 
         $(document).ready(function () {
 
-            $('#datepicker').datepicker({
+            $('#due_date').datepicker({
                 format: 'yyyy-mm-dd',
                 autoclose: true,
                 todayHighlight: true
+            }).on('show', function (e) {
+                setTimeout(function () {
+                    $('.datepicker').css('z-index', '9999'); // Ensure the datepicker is above other elements and not behind the modal
+                }, 10);
             });
-
-            $(".new-task-btn").click(function () { // Update the new task button click handler
+            $(".new-task-btn").click(function () { // Update the new task button
                 $('#modalTitle').text('Add New Task');
                 $('#formAction').val('create_task');
                 $('#taskId').val('');
@@ -710,7 +754,8 @@ if (empty($allTasks)) {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save Task</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save
+                            Task</button>
                     </div>
                 </form>
             </div>

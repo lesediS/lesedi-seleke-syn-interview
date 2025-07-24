@@ -377,45 +377,12 @@ function sanitizeInput($data)
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
 
-function redirect($url)
-{
-    if (!headers_sent()) {
-        header("Location: $url");
-        exit();
-    } else {
-        echo "<script>window.location.href='$url';</script>";
-        exit();
-    }
-}
+
 
 // Session management
 
-function startSession()
-{
-    if (session_status() === PHP_SESSION_NONE) {
-        ini_set('session.cookie_httponly', 1);
-        ini_set('session.use_only_cookies', 1);
 
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-            ini_set('session.cookie_secure', 1);
-        }
 
-        session_start();
-
-        // Regenerate session ID regularly
-        if (!isset($_SESSION['last_regeneration'])) {
-            $_SESSION['last_regeneration'] = time();
-        } elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
-            session_regenerate_id(true);
-            $_SESSION['last_regeneration'] = time();
-        }
-    }
-}
-
-function isLoggedIn()
-{
-    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
-}
 
 function requireLogin()
 {
