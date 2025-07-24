@@ -209,7 +209,7 @@ if (empty($allTasks)) {
                                 <li><a href="javascript:void(0)"><i class="md md-face-unlock"></i> Profile</a></li>
                                 <li><a href="javascript:void(0)"><i class="md md-settings"></i> Settings</a></li>
                                 <li><a href="javascript:void(0)"><i class="md md-lock"></i> Lock screen</a></li>
-                                <li><a href="javascript:void(0)"><i class="md md-settings-power"></i> Logout</a></li>
+                                <li><a href="login.php"><i class="md md-settings-power"></i> Logout</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -342,45 +342,6 @@ if (empty($allTasks)) {
                                     <button type="button"
                                         class="btn btn-primary waves-effect waves-light new-task-btn"><i
                                             class="fa fa-plus"></i> Add New Task</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- New tasks, the div is hidden by default -->
-                        <div class="row new-task_panel" style="display: none;">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title"><i class="fa fa-plus"></i> New Task</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <form role="form" method="post">
-                                        <input type="hidden" name="action" value="create_task">
-                                        <div class="form-group">
-                                            <label class="control-label">Task Name</label>
-                                            <input type="text" class="form-control" name="title" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">Description</label>
-                                            <textarea class="form-control" rows="5" name="description"></textarea>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-4">Due Date</label>
-                                                <div class="input-group col-md-8">
-                                                    <input type="text" class="form-control date-input" name="due_date"
-                                                        placeholder="yyyy-mm-dd" id="datepicker" required>
-                                                    <span class="input-group-addon"><i
-                                                            class="glyphicon glyphicon-calendar"></i></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="pull-right">
-                                                <button type="submit"
-                                                    class="create-btn btn btn-primary waves-effect waves-light">Create</button>
-                                            </div>
-                                        </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -586,7 +547,6 @@ if (empty($allTasks)) {
                 </div>
             </div>
 
-
             <!-- Footer -->
             <footer class="footer text-right">
                 <div class="container">
@@ -629,10 +589,20 @@ if (empty($allTasks)) {
 
         $(document).ready(function () {
 
-            $(".new-task-btn").click(function () {
-                $(".created-tasks").hide();
-                $(".new-button").hide();
-                $(".new-task_panel").fadeIn(500);
+            $('#datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            $(".new-task-btn").click(function () { // Update the new task button click handler
+                $('#modalTitle').text('Add New Task');
+                $('#formAction').val('create_task');
+                $('#taskId').val('');
+                $('#title').val('');
+                $('#description').val('');
+                $('#due_date').val('');
+                $('#taskModal').modal('show');
             });
 
             $(".create-btn").click(function () {
@@ -661,22 +631,91 @@ if (empty($allTasks)) {
                     format: 'yyyy-mm-dd'
                 });
             });
-        });
 
+            $('#taskForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: 'index.php',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function () {
+                        $('#taskModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Error saving task');
+                    }
+                });
+            });
+        });
 
         function editTask(taskId) {
-            window.location.href = 'edit_task.php?id=' + taskId; // TODO: Have a modal instead of redirecting
+            $.ajax({
+                url: 'get_task.php',
+                method: 'POST',
+                data: { task_id: taskId },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.error) {
+                        alert(response.error);
+                    } else {
+                        $('#modalTitle').text('Edit Task');
+                        $('#formAction').val('update_task');
+                        $('#taskId').val(response.id);
+                        $('#title').val(response.title);
+                        $('#description').val(response.description);
+                        $('#due_date').val(response.due_date);
+                        $('#taskModal').modal('show');
+                    }
+                },
+                error: function () {
+                    alert('Error loading task data');
+                }
+            });
         }
-=
-        $('#datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true
-        });
 
     </script>
 
+    <!-- Task form modal -->
+    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalTitle">Create New Task</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <form id="taskForm" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="action" id="formAction" value="create_task">
+                        <input type="hidden" name="task_id" id="taskId" value="">
 
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="due_date">Due Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control date-input" id="due_date" name="due_date"
+                                    required>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </body>
 

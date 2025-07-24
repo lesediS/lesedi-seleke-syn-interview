@@ -248,10 +248,10 @@ class Task
             ");
             $result = $stmt->execute([$userId, $title, $description, $dueDate]);
 
-            if ($result) {
+            /* if ($result) {
                 $taskId = $this->db->lastInsertId();
                 $this->logTaskActivity($userId, 'CREATE', $taskId, ['title' => $title, 'due_date' => $dueDate]);
-            }
+            } */
 
             return $result;
         } catch (PDOException $e) {
@@ -272,12 +272,12 @@ class Task
             ");
             $result = $stmt->execute([$title, $description, $dueDate, $taskId, $userId]);
 
-            if ($result && $oldTask) {
+            /* if ($result && $oldTask) {
                 $this->logTaskActivity($userId, 'UPDATE', $taskId, [
                     'old' => $oldTask,
                     'new' => ['title' => $title, 'description' => $description, 'due_date' => $dueDate]
                 ]);
-            }
+            }*/
 
             return $result;
         } catch (PDOException $e) {
