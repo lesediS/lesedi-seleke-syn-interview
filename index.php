@@ -48,6 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Handle task actions (CRUD oopera
                 }
                 break;
 
+            case 'mark_all_complete':
+                $pendingTasks = $taskManager->getUserTasks($currentUser['id'], 'pending');
+                foreach ($pendingTasks as $task) {
+                    $taskManager->markAsCompleted($task['id'], $currentUser['id']);
+                }
+                $success = 'All tasks marked as completed!';
+                break;
+
             case 'delete_task':
                 $taskId = (int) $_POST['task_id'];
                 if ($taskManager->deleteTask($taskId, $currentUser['id'])) {
@@ -292,8 +300,10 @@ if (empty($allTasks)) {
                         <div class="row m-b-20">
                             <div class="col-md-12">
                                 <div class="pull-right">
-                                    <button type="button" class="btn btn-primary waves-effect waves-light">Mark as
-                                        complete</button>
+                                    <form method="post" id="markallcompleteform" style="display:inline;">
+                                        <input type="hidden" name="action" value="mark_all_complete">
+                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Mark all as complete</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
