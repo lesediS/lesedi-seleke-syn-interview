@@ -36,11 +36,11 @@ CREATE TABLE user_sessions ( -- Table to manage user sessions
     id VARCHAR(128) PRIMARY KEY,
     user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP NOT NULL,
+    -- expires_at TIMESTAMP NOT NULL, -- Errors, remove
     ip_address VARCHAR(45),
     user_agent TEXT,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_user_id (user_id),
-    INDEX idx_expires (expires_at)
+    INDEX idx_user_id (user_id)
+    -- INDEX idx_expires (expires_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

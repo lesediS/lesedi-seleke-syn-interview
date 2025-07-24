@@ -1,3 +1,79 @@
+<?php
+require_once 'includes/config.php'; // We need the config.php file for database connection and functions
+
+startSession();
+requireLogin();
+
+$database = new Database();
+$taskManager = new Task($database);
+$currentUser = getCurrentUser();
+
+$success = '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Handle task actions (CRUD ooperations)
+    if (isset($_POST['action'])) {
+        switch ($_POST['action']) {
+            case 'create_task':
+                $title = sanitizeInput($_POST['title']); // Sanitize input to prevent XSS
+                $description = sanitizeInput($_POST['description']);
+                $dueDate = sanitizeInput($_POST['due_date']);
+                
+                if (!empty($title) && !empty($dueDate)) {
+                    if ($taskManager->createTask($currentUser['id'], $title,  // We assign the task to the current user
+                            $description, $dueDate)) {
+                        $success = 'Task created successfully!';
+                    } else {
+                        $error = 'Failed to create task.';
+                    }
+                } else {
+                    $error = 'Please fill in required fields.';
+                }
+                break;
+                
+            case 'complete_task':
+                $taskId = (int)$_POST['task_id'];
+                if ($taskManager->markAsCompleted($taskId, $currentUser['id'])) {
+                    $success = 'Task marked as completed!';
+                } else {
+                    $error = 'Failed to update task.';
+                }
+                break;
+                
+            case 'delete_task':
+                $taskId = (int)$_POST['task_id'];
+                if ($taskManager->deleteTask($taskId, $currentUser['id'])) {
+                    $success = 'Task deleted successfully!';
+                } else {
+                    $error = 'Failed to delete task.';
+                }
+                break;
+                
+            case 'update_task':
+                $taskId = (int)$_POST['task_id'];
+                $title = sanitizeInput($_POST['title']);
+                $description = sanitizeInput($_POST['description']);
+                $dueDate = sanitizeInput($_POST['due_date']);
+                
+                if (!empty($title) && !empty($dueDate)) {
+                    if ($taskManager->updateTask($taskId, $currentUser['id'], $title, $description, $dueDate)) {
+                        $success = 'Task updated successfully!';
+                    } else {
+                        $error = 'Failed to update task.';
+                    }
+                } else {
+                    $error = 'Please fill in required fields.';
+                }
+                break;
+        }
+    }
+}
+// Fetching tasks for the current user
+$myTasks = $taskManager->getUserTasks($currentUser['id'], 'pending');
+$completedTasks = $taskManager->getUserTasks($currentUser['id'], 'completed');
+$allTasks = $taskManager->getUserTasks($currentUser['id']);
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
