@@ -110,7 +110,7 @@ $allTasks = $taskManager->getUserTasks($currentUser['id']);
 
                     <!-- LOGO -->
                     <div class="topbar-left">
-                        <a href="index.html" class="logo"><img src="assets/images/synrgise-logo.png"></a>
+                        <a href="index.php" class="logo"><img src="assets/images/synrgise-logo.png"></a>
                     </div>
                     <!-- End Logo container-->
 
@@ -211,7 +211,7 @@ $allTasks = $taskManager->getUserTasks($currentUser['id']);
                     <div id="navigation">
                         <!-- Navigation Menu-->
                         <ul class="navigation-menu">
-                            <li class="active"><a href="index.html"><i class="md md-home"></i> <span> Dashboard </span> </a></li>
+                            <li class="active"><a href="index.php"><i class="md md-home"></i> <span> Dashboard </span> </a></li>
                         </ul>
                         <!-- End navigation menu  -->
                     </div>

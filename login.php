@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     INSERT INTO user_sessions (id, user_id, ip_address, user_agent) 
                     VALUES (?, ?, FROM_UNIXTIME(?), ?, ?)
                 ");
-                setcookie('remember_token', $token, '/', '', true, true);
+                
                 $stmt->execute([
                     $token,
                     $user['id'],
