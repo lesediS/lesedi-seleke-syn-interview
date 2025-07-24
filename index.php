@@ -520,67 +520,36 @@ if (empty($allTasks)) {
                                     <tr>
                                         <th>Due Date</th>
                                         <th>Task Name</th>
-                                        <th>Desscription</th>
+                                        <th>Description</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>28 June</td>
-                                        <td>Task 0.5</td>
-                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua.</td>
-                                        <td>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                    class="btn btn icon-btn">
-                                                    <i class="fa fa-trash-o"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>28 June</td>
-                                        <td>Task</td>
-                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua.</td>
-                                        <td>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                    class="btn btn icon-btn">
-                                                    <i class="fa fa-trash-o"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>28 June</td>
-                                        <td>Task 2.0</td>
-                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua.</td>
-                                        <td>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                    class="btn btn icon-btn">
-                                                    <i class="fa fa-trash-o"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>28 June</td>
-                                        <td>Task 1.5</td>
-                                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua.</td>
-                                        <td>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Delete"
-                                                    class="btn btn icon-btn">
-                                                    <i class="fa fa-trash-o"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <?php if (!empty($completedTasks)): ?>
+                                        <?php foreach ($completedTasks as $task): ?>
+                                            <tr>
+                                                <td><?= date('Y-m-d', strtotime($task['due_date'])) ?></td>
+                                                <td><?= htmlspecialchars($task['title']) ?></td>
+                                                <td><?= htmlspecialchars($task['description']) ?></td>
+                                                <td>
+                                                    <div class="icon-links quick-icon-links">
+                                                        <form method="post" style="display: inline;">
+                                                            <input type="hidden" name="action" value="delete_task">
+                                                            <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
+                                                            <button type="submit" data-toggle="tooltip" title="Delete"
+                                                                class="btn btn icon-btn">
+                                                                <i class="fa fa-trash-o"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="4" class="text-center">No completed tasks yet.</td>
+                                        </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -660,6 +629,14 @@ if (empty($allTasks)) {
                 $(".completed-list").fadeIn(500);
                 $(".list-view").addClass('text-primary');
                 $(".block-view").removeClass('text-primary');
+
+                if ($.fn.DataTable.isDataTable('#completedTasksTable')) {
+                    $('#completedTasksTable').DataTable().destroy();
+                }
+                $('#completedTasksTable').DataTable({
+                    responsive: true,
+                    "order": [[0, "asc"]]
+                });
             });
 
             $("#block-view").click(function () {
