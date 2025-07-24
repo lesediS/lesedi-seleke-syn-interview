@@ -2,11 +2,11 @@
 USE synrgise_tasks; -- We use the synrgise_tasks database
 
 -- Plain text password is demo123 and it will/is be hashed using PHP password_hash() function
-INSERT INTO users (username, email, password_hash) VALUES 
-('demo', 'demo@synrgise.com', '$2y$10$fOjPF1xPxsgyMvWZ.lLoJ.6ivK.z/ujO0GXgLyr87YJTWRXWWc0nW'),
-('john_doe', 'john@example.com', '$2y$10$1zTSrEDRRVqDM3btdcoeiOfXTz9luIhitauqam9Y5xRm2m.5FUPgy'),
-('jane_smith', 'jane@example.com', '$2y$10$YZw3jdwPbMmP3ZgE30AyiOWbUF1Z3938rUUG.0lTZjQEcb9DoMFuO'),
-('alice_jones', 'alice@example.com', '$2y$10$FtdCA8spMpOCAaAy2EGN8eSwPs7U5ZKCJyyQS/T6eWZ/uxxTcmO8y');
+INSERT INTO users (username, email, password_hash, avatar) VALUES -- Added avatars
+('demo', 'demo@synrgise.com', '$2y$10$fOjPF1xPxsgyMvWZ.lLoJ.6ivK.z/ujO0GXgLyr87YJTWRXWWc0nW', 'avatar-1.jpg'), 
+('john_doe', 'john@example.com', '$2y$10$1zTSrEDRRVqDM3btdcoeiOfXTz9luIhitauqam9Y5xRm2m.5FUPgy', 'avatar-2.jpg'),
+('jane_smith', 'jane@example.com', '$2y$10$YZw3jdwPbMmP3ZgE30AyiOWbUF1Z3938rUUG.0lTZjQEcb9DoMFuO', 'avatar-3.jpg'),
+('alice_jones', 'alice@example.com', '$2y$10$FtdCA8spMpOCAaAy2EGN8eSwPs7U5ZKCJyyQS/T6eWZ/uxxTcmO8y', 'avatar-4.jpg');
 
 INSERT INTO tasks (user_id, title, description, due_date, status, completed_at) VALUES
 -- Pending tasks

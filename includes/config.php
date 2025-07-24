@@ -66,16 +66,22 @@ class User
 
     public function login($username, $password)
     {
-        try {
+        try { // Now we fetch the user data including avatar
             $stmt = $this->db->prepare("
-                SELECT id, username, email, password_hash 
-                FROM users 
-                WHERE username = ? OR email = ?
-            ");
+            SELECT id, username, email, password_hash, avatar 
+            FROM users 
+            WHERE username = ? OR email = ?
+        ");
             $stmt->execute([$username, $username]);
             $user = $stmt->fetch();
 
-            if ($user && password_verify($password, $user['password_hash'])) { // Successfully logged in
+            if ($user && password_verify($password, $user['password_hash'])) {
+                // Storing user data in session including avatar
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['avatar'] = $user['avatar'] ?? 'avatar-1.jpg';
+
                 $this->logActivity($user['id'], 'LOGIN', null, null, ['ip' => $_SERVER['REMOTE_ADDR']]);
                 return $user;
             }
@@ -159,7 +165,7 @@ class User
     public function getUserById($userId)
     {
         try {
-            $stmt = $this->db->prepare("SELECT id, username, email, created_at FROM users WHERE id = ?");
+            $stmt = $this->db->prepare("SELECT id, username, email, avatar, created_at FROM users WHERE id = ?");
             $stmt->execute([$userId]);
             return $stmt->fetch();
         } catch (PDOException $e) {
@@ -233,14 +239,14 @@ class Task
         }
     }
 
-    public function createTask($userId, $title, $description, $dueDate, $priority = 'medium')
+    public function createTask($userId, $title, $description, $dueDate)
     {
         try {
             $stmt = $this->db->prepare("
-                INSERT INTO tasks (user_id, title, description, due_date, priority) 
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO tasks (user_id, title, description, due_date) 
+                VALUES (?, ?, ?, ?)
             ");
-            $result = $stmt->execute([$userId, $title, $description, $dueDate, $priority]);
+            $result = $stmt->execute([$userId, $title, $description, $dueDate]);
 
             if ($result) {
                 $taskId = $this->db->lastInsertId();
@@ -254,22 +260,22 @@ class Task
         }
     }
 
-    public function updateTask($taskId, $userId, $title, $description, $dueDate, $priority = 'medium')
+    public function updateTask($taskId, $userId, $title, $description, $dueDate)
     {
         try {
             $oldTask = $this->getTask($taskId, $userId); // Get old values for logging
 
             $stmt = $this->db->prepare("
                 UPDATE tasks 
-                SET title = ?, description = ?, due_date = ?, priority = ?
+                SET title = ?, description = ?, due_date = ?
                 WHERE id = ? AND user_id = ?
             ");
-            $result = $stmt->execute([$title, $description, $dueDate, $priority, $taskId, $userId]);
+            $result = $stmt->execute([$title, $description, $dueDate, $taskId, $userId]);
 
             if ($result && $oldTask) {
                 $this->logTaskActivity($userId, 'UPDATE', $taskId, [
                     'old' => $oldTask,
-                    'new' => ['title' => $title, 'description' => $description, 'due_date' => $dueDate, 'priority' => $priority]
+                    'new' => ['title' => $title, 'description' => $description, 'due_date' => $dueDate]
                 ]);
             }
 
@@ -423,7 +429,8 @@ function getCurrentUser()
     return [
         'id' => $_SESSION['user_id'] ?? null,
         'username' => $_SESSION['username'] ?? null,
-        'email' => $_SESSION['email'] ?? null
+        'email' => $_SESSION['email'] ?? null,
+        'avatar' => $_SESSION['avatar'] ?? 'avatar-1.jpg' ?? null
     ];
 }
 
